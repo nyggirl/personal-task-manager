@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Task } from '../data/tasks';
 
+// Initial state with a default task
 const initialTasks: Task[] = [
   {
     id: '1',
@@ -10,6 +11,7 @@ const initialTasks: Task[] = [
   }
 ];
 
+// Define the shape of our context
 interface TaskContextType {
   tasks: Task[];
   setTasks: (tasks: Task[]) => void;
@@ -17,8 +19,11 @@ interface TaskContextType {
   toggleTaskStatus: (id: string) => void;
 }
 
+// Create context with null as initial value
 const TaskContext = createContext<TaskContextType | null>(null);
 
+// Custom hook to consume the TaskContext
+// Throws an error if used outside of TaskProvider
 export const useTaskState = () => {
   const context = useContext(TaskContext);
   if (!context) {
@@ -30,8 +35,11 @@ export const useTaskState = () => {
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
+  // Helper function to find a task by its ID
   const getTask = (id: string) => tasks.find(task => task.id === id);
 
+  // Toggles a task's status between 'pending' and 'completed'
+  // Uses functional update to ensure we're working with the latest state
   const toggleTaskStatus = (id: string) => {
     setTasks(prevTasks => 
       prevTasks.map(task => 
@@ -42,6 +50,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
+  // Memoize the context value to prevent unnecessary re-renders
+  // Only updates when tasks array changes
   const value = React.useMemo(
     () => ({ tasks, setTasks, getTask, toggleTaskStatus }),
     [tasks]
