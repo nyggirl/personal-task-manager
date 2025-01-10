@@ -16,6 +16,7 @@ export interface TaskListProps {
     onToggleStatus: (id: string) => void;
 }
 
+// Memoized TaskItem component to prevent unnecessary re-renders
 const TaskItem = React.memo(({ 
     item, 
     onDelete, 
@@ -36,6 +37,7 @@ const TaskItem = React.memo(({
 
     return (
         <View style={styles.taskContainer}>
+            {/* Custom checkbox implementation */}
             <TouchableOpacity 
                 style={[
                     styles.checkbox,
@@ -48,6 +50,8 @@ const TaskItem = React.memo(({
                     <Text style={styles.checkmark}>✓</Text>
                 )}
             </TouchableOpacity>
+
+            {/* Task content area - navigates to details on press */}
             <TouchableOpacity 
                 style={styles.taskContent}
                 onPress={() => router.push(`/details/${item.id}`)}
@@ -72,6 +76,8 @@ const TaskItem = React.memo(({
                     </Text>
                 ) : null}
             </TouchableOpacity>
+            
+            {/* Action buttons container */}
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity
                     style={styles.actionButton}
@@ -104,6 +110,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onToggleSt
         onToggleStatus(id);
     };
 
+    // Render function for FlatList - provides consistent item rendering
     const renderItem = ({ item }: { item: Task }) => (
         <TaskItem 
             item={item} 
