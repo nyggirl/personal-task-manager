@@ -7,10 +7,13 @@ import { useTaskState } from '../contexts/TaskContext';
 
 export default function Home() {
   const { tasks, setTasks, toggleTaskStatus } = useTaskState();
+  // Track the currently edited task, null when not editing
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const handleAddTask = (title: string, description: string) => {
+    // Handle both edit and create scenarios
     if (editingTask) {
+      // Update existing task while preserving other properties
       const updatedTasks = tasks.map(task =>
         task.id === editingTask.id
           ? { ...task, title, description }
@@ -19,6 +22,7 @@ export default function Home() {
       setTasks(updatedTasks);
       setEditingTask(null);
     } else {
+      // Create new task with unique ID and default pending status
       const newTask: Task = {
         id: Math.random().toString(),
         title,
@@ -51,6 +55,7 @@ export default function Home() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.content}>
+          {/* AddTaskForm handles both creation and editing */}
           <AddTaskForm 
             onAddTask={handleAddTask}
             editingTask={editingTask}
