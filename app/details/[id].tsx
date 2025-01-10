@@ -7,16 +7,19 @@ export default function Details() {
   const { tasks, getTask } = useTaskState();
   const params = useLocalSearchParams();
   const router = useRouter();
-  
+
+  // Ensure consistent ID type since params can be string | string[]
   const id = typeof params.id === 'string' ? params.id : String(params.id);
   
   console.log('Details page - tasks:', tasks);
   console.log('Details page - id:', id);
-  
+
+  // Find the specific task matching the URL parameter ID
   const task = tasks.find(t => t.id === id);
   
   console.log('Details page - found task:', task);
 
+  // Early return with error state if task is not found
   if (!task) {
     return (
       <View style={styles.container}>
@@ -28,6 +31,7 @@ export default function Details() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Task information sections */}
         <View style={styles.section}>
           <Text style={styles.label}>Title</Text>
           <Text style={styles.title}>{task.title}</Text>
@@ -41,6 +45,7 @@ export default function Details() {
         <View style={styles.section}>
           <Text style={styles.label}>Status</Text>
           <View style={styles.statusContainer}>
+            {/* Dynamic styling based on task status */}
             <View style={[
               styles.statusBadge,
               task.status === 'completed' ? styles.completedBadge : styles.pendingBadge
