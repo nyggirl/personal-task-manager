@@ -11,16 +11,19 @@ interface AddTaskFormProps {
 const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAddTask, editingTask, onCancelEdit }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    // Controls whether the description input field is visible
     const [isExpanded, setIsExpanded] = useState(false);
 
+    // Populate form fields when editing an existing task
     useEffect(() => {
         if (editingTask) {
             setTitle(editingTask.title);
             setDescription(editingTask.description || '');
-            setIsExpanded(true);
+            setIsExpanded(true); // Always show description field when editing
         }
     }, [editingTask]);
 
+    // Reset form state and notify parent component
     const handleCancel = () => {
         setTitle('');
         setDescription('');
@@ -31,11 +34,14 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAddTask, editingTask, onCan
     };
 
     const handleSubmit = () => {
+        // Only submit if title is not empty (after trimming whitespace)
         if (title.trim()) {
             onAddTask(title, description);
+            // Reset form state after successful submission
             setTitle('');
             setDescription('');
             setIsExpanded(false);
+            // If we were editing, notify parent component
             if (editingTask && onCancelEdit) {
                 onCancelEdit();
             }
@@ -50,9 +56,10 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAddTask, editingTask, onCan
                     placeholder="Add new task..."
                     value={title}
                     onChangeText={setTitle}
-                    onFocus={() => setIsExpanded(true)}
+                    onFocus={() => setIsExpanded(true)} // Show description field on focus
                 />
                 <View style={styles.buttonContainer}>
+                    {/* Only show cancel button when editing */}
                     {editingTask && (
                         <TouchableOpacity 
                             style={[styles.submitButton, styles.cancelButton]}
@@ -71,6 +78,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAddTask, editingTask, onCan
                     </TouchableOpacity>
                 </View>
             </View>
+            {/* Expandable description input */}
             {isExpanded && (
                 <View style={styles.descriptionContainer}>
                     <TextInput
