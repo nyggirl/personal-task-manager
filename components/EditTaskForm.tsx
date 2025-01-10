@@ -3,24 +3,18 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { Task } from '../data/tasks';
 
 interface EditTaskFormProps {
-    // "null": it can be "null" if no task is selected
     task: Task | null;
-    // "onSave", "onCancel": callback functions to save the edited or cancel editing
-    // they are user-defined functions, are props passed to the "EditTaskForm" component
-    // which means they are provided by the parent component that uses "EditTaskForm"
     onSave: (id: string, title: string, description: string) => void;
     onCancel: () => void;
 }
 
 const EditTaskForm: React.FC<EditTaskFormProps> = ({ task, onSave, onCancel }) => {
-    // "task?.title || ''": 1. if "task" exists and has a "title" property, "title" will be initialized with "task.title"
-    // 2. if "taks" is null, undefined, or doesnot have a "title" property, "title" will be initiazlied as an empty string('')
+    // Initialize form state with task data or empty strings if no task provided
     const [title, setTitle] = useState(task?.title || '');
     const [description, setDescription] = useState(task?.description || '');
 
-    // This hook runs whenever the "task" prop changes, updates the "title" and "description" state variables to reflect the current task's details
-    // "useEffect": allows you to run side effects (like fetching data, subscribing to a service, or updating state based on prop changes or other state changes) in a functional component
-    // it's called after the render and when the component's state or props change
+    // Sync form state with task prop when it changes
+    // This ensures form is updated if parent component provides a different task
     useEffect(() => {
         if (task) {
             setTitle(task.title);
@@ -28,6 +22,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ task, onSave, onCancel }) =
         }
     }, [task]);
 
+    // Only trigger save if we have a valid task ID
     const handleSubmit = () => {
         if (task) {
             onSave(task.id, title, description);
